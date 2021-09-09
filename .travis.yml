@@ -1,9 +1,8 @@
 dist: xenial
 language: java
-sudo: false
+sudo: required
 jdk: openjdk11
 install: true
-script: ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 cache:
   directories:
     - $HOME/.m2
