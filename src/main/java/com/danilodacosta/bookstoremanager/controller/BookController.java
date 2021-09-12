@@ -17,6 +17,6 @@ public class BookController {
             @ApiResponse(code = 200, message = "Success method return")
     })
     public String hello() {
-        return "Hello book store manager";
+        return "Hello book store manager, I am running an example! with PR";
     }
 }
