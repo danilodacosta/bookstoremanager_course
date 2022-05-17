@@ -4,6 +4,7 @@ import com.danilodacosta.bookstoremanager.author.dto.AuthorDTO;
 import com.danilodacosta.bookstoremanager.author.entity.Author;
 import com.danilodacosta.bookstoremanager.author.entity.repository.AuthorRepository;
 import com.danilodacosta.bookstoremanager.author.exception.AuthorAlreadyExistsException;
+import com.danilodacosta.bookstoremanager.author.exception.AuthorNotFoundException;
 import com.danilodacosta.bookstoremanager.author.mapper.AuthorMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,15 @@ public class AuthorService {
        Author createdAuthor =  authorRepository.save(authorToCreate);
        return authorMapper.toDTO(createdAuthor);
     }
+
+    public AuthorDTO findById(Long id) {
+
+        Author foundAuthor = authorRepository.findById(id)
+                .orElseThrow(() -> new AuthorNotFoundException(id));
+
+        return authorMapper.toDTO(foundAuthor);
+    }
+
 
     private void verifyExists(String authorName) {
         authorRepository.findByName(authorName)
