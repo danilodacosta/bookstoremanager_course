@@ -4,10 +4,6 @@ import com.danilodacosta.bookstoremanager.author.builder.AuthorDTOBuilder;
 import com.danilodacosta.bookstoremanager.author.dto.AuthorDTO;
 import com.danilodacosta.bookstoremanager.author.service.AuthorService;
 import com.danilodacosta.bookstoremanager.utils.JsonConversationUtils;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,15 +14,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import java.net.URI;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -84,5 +76,19 @@ public class AuthorControllerTest {
     }
 
 
+
+    @Test
+    void whenGETWithValidIdIsCalledThenStatusOkShouldBeReturned() throws Exception {
+        AuthorDTO expectedFoundAuthorDTO = authorDTOBuilder.authorDTOBuilder();
+
+        Mockito.when(authorService.findById(expectedFoundAuthorDTO.getId())).thenReturn(expectedFoundAuthorDTO);
+
+        mockMvc.perform(get(AUTHOR_API_URL_PATH + "/" + expectedFoundAuthorDTO.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", Is.is(expectedFoundAuthorDTO.getId().intValue())))
+                .andExpect(jsonPath("$.name", Is.is(expectedFoundAuthorDTO.getName())))
+                .andExpect(jsonPath("$.age", Is.is(expectedFoundAuthorDTO.getAge())));
+    }
 
 }
